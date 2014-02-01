@@ -1,0 +1,37 @@
+#!/usr/bash
+#download website
+echo "Getting all the images";
+wget -q http://hdwallpaper-s.com/
+for i in $(egrep -o "hdwallpaper\-s\.com/([0-9]{1,})\.html" index.html); do
+if [ -e $(basename $i) ] 
+then
+sleep 0
+#echo "Nothing Interesting here continue with your work"
+else
+wget -q $i
+for j in $(egrep -o "hdwallpaper-s.com/([0-9]{1,})__([^ \"\.]{1,})" $(basename $i)); do
+filename=$(basename $j)
+filename=${filename//__//};
+filename="${filename}.jpg";
+if [ -e $(basename $filename) ]
+then
+sleep 0
+#echo "Again nthing here to worry about"
+else
+echo "Downloading file ${filename}";
+filename="http://hdwallpaper-s.com/wallpapers/${filename}";
+#echo $filename>>files.txt
+wget -q $filename
+fi
+done
+fi
+done
+
+for k in *.html; do
+rm $k
+done
+mkdir wallpapers
+for l in *.jpg; do
+mv $l wallpapers
+done
+rm *.jpg.1
